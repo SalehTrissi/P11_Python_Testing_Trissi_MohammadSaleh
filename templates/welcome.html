@@ -1,36 +1,55 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Summary | GUDLFT Registration</title>
-</head>
-<body>
-        <h2>Welcome, {{club['email']}} </h2><a href="{{url_for('logout')}}">Logout</a>
+{% extends "base.html" %}
 
-    {% with messages = get_flashed_messages()%}
-    {% if messages %}
-        <ul>
-       {% for message in messages %}
-            <li>{{message}}</li>
-        {% endfor %}
-       </ul>
-    {% endif%}
-    Points available: {{club['points']}}
-    <h3>Competitions:</h3>
-    <ul>
-        {% for comp in competitions%}
-        <li>
-            {{comp['name']}}<br />
-            Date: {{comp['date']}}</br>
-            Number of Places: {{comp['numberOfPlaces']}}
-            {%if comp['numberOfPlaces']|int >0%}
-            <a href="{{ url_for('book',competition=comp['name'],club=club['name']) }}">Book Places</a>
-            {%endif%}
-        </li>
-        <hr />
-        {% endfor %}
-    </ul>
-    {%endwith%}
+{% block title %}
+    Summary | GUDLFT Registration
+{% endblock %}
 
-</body>
-</html>
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="text-center">Welcome, {{club['email']}}</h2>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="col-md-8 mx-auto text-center">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </ul>
+                {% endif %}   
+                <div class="d-flex mt-4 justify-content-around">
+                    <div>
+                        <p>Points available: {{club['points']}}</p>
+                    </div>
+                    <div>
+                        <h4>Competitions:</h4>
+                    </div>
+                    <div>
+                        <a class="btn btn-outline-danger btn-sm text-end" href="{{url_for('logout')}}" role="button"><i class="bi bi-door-open"> Logout</i></a>
+                    </div>
+                </div>         
+                {% for comp in competitions%}
+                    <div class="border mb-2 p-3">
+                        <h5 class="text-center">{{comp['name']}}</h5>
+                        <ul class="d-flex justify-content-around list-unstyled mt-2">
+                            <li>
+                                <i class="bi bi-calendar"> Date: {{comp['date']}}</i>
+                            </li>
+                            <li>
+                                <i class="bi bi-bookmark-check"> Number of Places: {{comp['numberOfPlaces']}}</i>
+                            </li>
+                            <li>
+                                {%if comp['numberOfPlaces']|int >0%}
+                                    <a href="{{ url_for('book',competition=comp['name'],club=club['name']) }}" class="btn btn-primary" type="button">Book Places</a>
+                                {%endif%}
+                            </li>
+                        </ul>
+                    </div>
+                {% endfor %}
+            {%endwith%}
+        </div>
+    </div>
+</div>
+{% endblock  %}
