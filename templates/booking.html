@@ -1,17 +1,57 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking for {{competition['name']}} || GUDLFT</title>
-</head>
-<body>
-    <h2>{{competition['name']}}</h2>
-    Places available: {{competition['numberOfPlaces']}}
-    <form action="/purchasePlaces" method="post">
-        <input type="hidden" name="club" value="{{club['name']}}">
-        <input type="hidden" name="competition" value="{{competition['name']}}">
-        <label for="places">How many places?</label><input type="number" name="places" id=""/>
-        <button type="submit">Book</button>
-    </form>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}
+    Booking for {{competition['name']}} || GUDLFT
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="text-center">{{competition['name']}}</h2>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="col-md-8 mx-auto text-center">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} p-1" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <div class="border mb-3 p-3 text-center">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Your points available</th>
+                                <th scope="col">Number of places reserved by your club</th>
+                                <th scope="col">Places available</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ club['points'] }}</td>
+                                <td>{{ reserved_places }}</td>
+                                <td>{{ competition['numberOfPlaces'] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <form action="/purchasePlaces" method="post">
+                        <input type="hidden" name="club" value="{{ club['name'] }}">
+                        <input type="hidden" name="competition" value="{{ competition['name'] }}">
+                        <div class="form-outline col-md-4 mx-auto">
+                            <label class="form-label" for="places">How many places do you want to reserve?</label>
+                            <input min="1" max="12" type="number" name="places" id="places" class="form-control" required/>
+                        </div>
+                        <button type="submit" class="btn btn-primary m-3">Submit</button>
+                    </form>
+                </div>
+            {% endwith %}
+            <div class="mt-2 text-end">
+                <a href="{{ url_for('showSummary') }}" class="btn btn-secondary" role="button">Go Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,16 +1,34 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GUDLFT Registration</title>
-</head>
-<body>
-    <h1>Welcome to the GUDLFT Registration Portal!</h1>
-    Please enter your secretary email to continue:
-    <form action="showSummary" method="post">
-        <label for="email">Email:</label>
-        <input type="email" name="email" id=""/>
-        <button type="submit">Enter</button>
-    </form>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}
+    GUDLFT Registration
+{% endblock  %}
+
+{% block content %}
+    <div class="container text-center">
+        <div class="mb-3 row g-2 justify-content-center">
+            <h1 class="m-2">Welcome to the GUDLFT Registration Portal!</h1>
+            <div class="border col-6 mt-4">
+                <div class="p-3">
+                    {% with messages= get_flashed_messages()%}
+                        {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-danger p-1" role="alert">
+                                {{message}}
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <p>Please enter your secretary email to continue:</p>
+                    <form action="showSummary" method="post">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address:</label>
+                            <input type="email" name="email" class="form-control" id="InputEmail1">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
