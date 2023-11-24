@@ -6,27 +6,24 @@
 
 {% block content %}
     <div class="container text-center">
-        <div class="mb-3 row g-2 justify-content-center mt-4">
+        <div class="mb-3 row g-2 justify-content-center">
             <h1 class="m-2">Welcome to the GUDLFT Registration Portal!</h1>
-            <div class="border col-md-6 col-sm-12 mt-4">
+            <div class="border col-6 mt-4">
                 <div class="p-3">
-                    {% with messages = get_flashed_messages() %}
+                    {% with messages= get_flashed_messages()%}
                         {% if messages %}
+                            {% for message in messages %}
                             <div class="alert alert-danger p-1" role="alert">
-                                {% for message in messages %}
-                                    {{ message | safe }}  {# Use the safe filter to prevent HTML-escaping #}
-                                {% endfor %}
+                                {{message}}
                             </div>
+                            {% endfor %}
                         {% endif %}
                     {% endwith %}
                     <p>Please enter your secretary email to continue:</p>
                     <form action="showSummary" method="post">
                         <div class="mb-3">
                             <label for="email" class="form-label">Email address:</label>
-                            <input type="email" name="email" class="form-control" id="inputEmail" required>
-                            <div class="invalid-feedback">
-                                Please enter a valid email address.
-                            </div>
+                            <input type="email" name="email" class="form-control" id="InputEmail1">
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
