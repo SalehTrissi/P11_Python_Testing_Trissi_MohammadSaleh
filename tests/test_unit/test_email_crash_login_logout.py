@@ -29,8 +29,8 @@ def test_email_not_found(client):
     # Find div with class alert and get its text content
     alert_text = soup.find('div', class_='alert').get_text(strip=True)
 
-    # Assert that the message "Sorry, that email wasn't found." is in the alert text
-    assert "Sorry, that email wasn't found." in alert_text
+    # Assert that the message "Invalid email. Please try again." is in the alert text
+    assert "Invalid email. Please try again." in alert_text
 
 
 def test_login(client):
