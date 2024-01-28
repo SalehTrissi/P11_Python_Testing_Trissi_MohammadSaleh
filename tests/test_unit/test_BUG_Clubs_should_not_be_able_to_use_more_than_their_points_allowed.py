@@ -29,8 +29,11 @@ def test_redeem_points_negative_balance(client, get_club_and_competition):
     competition_name = "Spring Festival"
     club, competition = get_club_and_competition(club_name, competition_name)
 
-    available_points = int(club['points'])
-    places_to_redeem = available_points + 1  # Attempt to go into negative balance
+    # Set the club's points to a known value less than 12
+    club['points'] = 10
+
+    # Try to redeem more points than the club has but within the 12 places limit
+    places_to_redeem = 11  # More than available points but less than 12
     data = {
         'competition': competition_name,
         'club': club_name,
@@ -51,4 +54,4 @@ def test_redeem_points_negative_balance(client, get_club_and_competition):
     updated_club, _ = get_club_and_competition(
         club_name, competition_name)  # Re-fetch to get updated data
     assert int(
-        updated_club['points']) == available_points, "Club points should not have changed"
+        updated_club['points']) == 10, "Club points should not have changed"

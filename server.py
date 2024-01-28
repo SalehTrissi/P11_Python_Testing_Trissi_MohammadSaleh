@@ -63,7 +63,17 @@ def purchasePlaces():
     # Check if the competition or club is not found
     if not competition or not club:
         flash('Invalid competition or club.')
-        return render_template('welcome.html', club=club, competition=competition)
+        return render_template('welcome.html', club=club, competitions=competitions)
+
+    # Check if the club has already booked places for this competition
+    places_already_booked = club['places_booked'].get(competition_name, 0)
+
+    # Calculate the total places booked, including the new booking
+    total_places_booked = places_already_booked + placesRequired
+
+    if total_places_booked > 12:
+        flash('You can book no more than 12 places in each competition.')
+        return redirect(url_for('book', competition=competition_name, club=club_name))
 
     # Calculate the available points of the club
     available_points = int(club['points'])
@@ -77,6 +87,9 @@ def purchasePlaces():
     competition['numberOfPlaces'] = int(
         competition['numberOfPlaces']) - placesRequired
     club['points'] = available_points - placesRequired
+
+    # Update the places_booked record for the club
+    club['places_booked'][competition_name] = total_places_booked
 
     # Display a success message
     flash('Great-booking complete!', 'success')
