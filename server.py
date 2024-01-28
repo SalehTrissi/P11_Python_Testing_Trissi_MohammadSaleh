@@ -65,7 +65,9 @@ def book(competition, club):
         return render_template('welcome.html', club=foundClub, competitions=competitions)
 
     if foundClub and foundCompetition:
-        return render_template('booking.html', club=foundClub, competition=foundCompetition)
+        # Retrieve the number of places already booked by the club for this competition
+        places_already_booked = foundClub['places_booked'].get(competition, 0)
+        return render_template('booking.html', club=foundClub, competition=foundCompetition, total_places_booked=places_already_booked)
     else:
         flash("Something went wrong-please try again")
         return render_template('welcome.html', club=foundClub, competitions=competitions)
@@ -112,6 +114,9 @@ def purchasePlaces():
 
     # Update the places_booked record for the club
     club['places_booked'][competition_name] = total_places_booked
+
+    # Update the session with the modified club
+    session['club'] = club
 
     # Display a success message
     flash('Great-booking complete!', 'success')
