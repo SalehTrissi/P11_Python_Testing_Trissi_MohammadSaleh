@@ -53,38 +53,32 @@ def book(competition, club):
 def purchasePlaces():
     competition_name = request.form['competition']
     club_name = request.form['club']
-    places_required = int(request.form['places'])
+    placesRequired = int(request.form['places'])
 
     # Find the selected competition and club
     competition = next(
-        (c for c in competitions if c['name'] == competition_name), None)
-    club = next((c for c in clubs if c['name'] == club_name), None)
+        (comp for comp in competitions if comp['name'] == competition_name), None)
+    club = next((club for club in clubs if club['name'] == club_name), None)
 
-    if competition is None or club is None:
+    # Check if the competition or club is not found
+    if not competition or not club:
         flash('Invalid competition or club.')
-        return redirect(url_for('index'))
+        return render_template('welcome.html', club=club, competition=competition)
 
-    # Check if the club has already booked places for this competition
-    if competition_name in club['places_booked']:
-        places_already_booked = club['places_booked'][competition_name]
-    else:
-        places_already_booked = 0
+    # Calculate the available points of the club
+    available_points = int(club['points'])
 
-    # Calculate the total places booked, including the new booking
-    total_places_booked = places_already_booked + places_required
+    # Check if there are enough points to redeem
+    if placesRequired > available_points:
+        flash('Not enough points to redeem.')
+        return render_template('booking.html', club=club, competition=competition)
 
-    if places_already_booked > 0 and total_places_booked > 12:
-        flash('You can book no more than 12 places in each competition.')
-        return redirect(url_for('book', competition=competition_name, club=club_name))
+    # Deduct the redeemed points from the club's total and update available places
+    competition['numberOfPlaces'] = int(
+        competition['numberOfPlaces']) - placesRequired
+    club['points'] = available_points - placesRequired
 
-    available_places = int(competition['numberOfPlaces'])
-
-    # Deduct the places if the request is valid
-    competition['numberOfPlaces'] = str(available_places - places_required)
-
-    # Update the places booked by the club for this competition
-    club['places_booked'][competition_name] = total_places_booked
-
+    # Display a success message
     flash('Great-booking complete!', 'success')
     return render_template('welcome.html', club=club, competitions=competitions)
 

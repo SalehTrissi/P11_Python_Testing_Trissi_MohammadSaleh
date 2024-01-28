@@ -9,11 +9,11 @@
     <div class="row">
         <div class="col-md-12">
             <h2 class="text-center">Welcome, {{club['email']}}</h2>
-            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% with messages = get_flashed_messages()%}
                 {% if messages %}
                     <ul class="col-md-8 mx-auto text-center">
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }}" role="alert">
+                        {% for message in messages %}
+                            <div class="alert alert-success p-1" role="alert">
                                 {{ message }}
                             </div>
                         {% endfor %}
