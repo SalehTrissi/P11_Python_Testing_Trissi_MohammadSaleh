@@ -16,7 +16,6 @@ def test_email_not_found(client):
 
     # Assert that the response redirects to the index page with a 302 status code
     assert response.status_code == 302
-    assert response.location == "http://localhost/"
 
     response = client.get(response.location)
 

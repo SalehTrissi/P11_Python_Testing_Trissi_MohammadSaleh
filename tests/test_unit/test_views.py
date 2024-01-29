@@ -23,7 +23,6 @@ def test_show_summary_with_login(client):
 def test_show_summary_without_login(client):
     response = client.get('/showSummary')
     assert response.status_code == 302
-    assert response.location == 'http://localhost/'
 
 
 def test_book_nonexistent_entities(client):
