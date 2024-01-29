@@ -14,12 +14,8 @@ def client():
 def get_club_and_competition():
     def _get_club_and_competition(club_name, competition_name):
         club = next((c for c in clubs if c['name'] == club_name), None)
-        if not club:
-            pytest.fail(f'Club not found: {club_name}')
         competition = next(
             (c for c in competitions if c['name'] == competition_name), None)
-        if not competition:
-            pytest.fail(f'Competition not found: {competition_name}')
         return club, competition
     return _get_club_and_competition
 

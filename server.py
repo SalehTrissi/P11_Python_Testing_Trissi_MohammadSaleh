@@ -52,8 +52,13 @@ def showSummary():
 
 @app.route('/book/<competition>/<club>')
 def book(competition, club):
-    foundClub = [c for c in clubs if c['name'] == club][0]
-    foundCompetition = [c for c in competitions if c['name'] == competition][0]
+    foundClub = next((c for c in clubs if c['name'] == club), None)
+    foundCompetition = next(
+        (c for c in competitions if c['name'] == competition), None)
+
+    if not foundClub or not foundCompetition:
+        flash("Something went wrong-please try again")
+        return render_template('welcome.html', club=None, competitions=competitions)
 
     # Convert competition date to a datetime object
     competition_date = datetime.strptime(
@@ -64,13 +69,9 @@ def book(competition, club):
         flash('This competition has already taken place.', 'error')
         return render_template('welcome.html', club=foundClub, competitions=competitions)
 
-    if foundClub and foundCompetition:
-        # Retrieve the number of places already booked by the club for this competition
-        places_already_booked = foundClub['places_booked'].get(competition, 0)
-        return render_template('booking.html', club=foundClub, competition=foundCompetition, total_places_booked=places_already_booked)
-    else:
-        flash("Something went wrong-please try again")
-        return render_template('welcome.html', club=foundClub, competitions=competitions)
+    # Retrieve the number of places already booked by the club for this competition
+    places_already_booked = foundClub['places_booked'].get(competition, 0)
+    return render_template('booking.html', club=foundClub, competition=foundCompetition, total_places_booked=places_already_booked)
 
 
 @app.route('/purchasePlaces', methods=['POST'])

@@ -31,9 +31,6 @@ def test_bug_limit_booking_12_places(client, clubs, competitions):
     competition = next(
         (c for c in competitions if c['name'] == competition_name), None)
 
-    if not club or not competition:
-        pytest.fail(f'Required club or competition not found for the test.')
-
     # Try booking 13 places, which is more than the allowed limit
     places_to_book = 13
     data = {

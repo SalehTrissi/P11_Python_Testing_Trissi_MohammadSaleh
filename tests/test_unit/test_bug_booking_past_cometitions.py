@@ -1,7 +1,5 @@
 import pytest
-# Replace with the correct way to import your Flask app
 from server import app
-from datetime import datetime, timedelta
 
 
 @pytest.fixture
@@ -11,7 +9,7 @@ def client():
         yield client
 
 
-def test_booking_past_competition(client):
+def test_booking_page_for_past_competition_shows_error(client):
     # Example data for a past competition and a club
     competition_name = "Spring Festival"
     club_name = "Simply Lift"
@@ -21,18 +19,5 @@ def test_booking_past_competition(client):
     assert response.status_code == 200
 
     # Check if the correct error message is flashed
-    if b'This competition has already taken place.' in response.data:
-        assert b'Great-booking complete!' not in response.data
-    else:
-        # If no error message, proceed to attempt booking
-        response = client.post('/purchasePlaces', data={
-            'competition': competition_name,
-            'club': club_name,
-            'places': 3
-        }, follow_redirects=True)
-
-        assert response.status_code == 200
-
-        # Check that an error message is flashed instead of a success message
-        assert b'Great-booking complete!' not in response.data
-        assert b'This competition has already taken place.' in response.data
+    assert b'This competition has already taken place.' in response.data
+    assert b'Great-booking complete!' not in response.data

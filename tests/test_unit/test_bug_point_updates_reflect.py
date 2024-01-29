@@ -15,8 +15,6 @@ def test_points_deduction(client):
     # Get the initial points balance of the club
     club = next(
         (club for club in clubs if club['name'] == 'Simply Lift'), None)
-    if not club:
-        pytest.fail("Test club not found.")
 
     initial_points = int(club['points'])
 
