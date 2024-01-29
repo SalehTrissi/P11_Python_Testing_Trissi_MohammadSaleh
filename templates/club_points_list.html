@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Club Points List || GUDLFT
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="text-center">Club Points List</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Club Name</th>
+                        <th>Points Available</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for club in clubs %}
+                        <tr>
+                            <td>{{ club['name'] }}</td>
+                            <td>{{ club['points'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="mt-3 text-end">
+                <a href="{{ url_for('showSummary') }}" class="btn btn-secondary" role="button">Go Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
