@@ -70,7 +70,7 @@ def purchasePlaces():
     total_places_booked = places_already_booked + places_required
 
     # Check if requested places exceed the limit per club per competition
-    if places_required > 12:
+    if total_places_booked > 12:
         flash('You can book no more than 12 places in each competition.')
         return redirect(url_for('book', competition=competition_name, club=club_name))
 
