@@ -1,7 +1,5 @@
 import pytest
-# Replace with the correct way to import your Flask app
 from server import app
-from datetime import datetime, timedelta
 
 
 @pytest.fixture
