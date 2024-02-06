@@ -1,8 +1,6 @@
 import pytest
 from server import app, competitions, clubs
 
-# Define a fixture to set up the Flask app for testing
-
 
 @pytest.fixture
 def client():
