@@ -1,4 +1,5 @@
 import pytest
+from bs4 import BeautifulSoup
 from server import app, competitions, clubs
 
 
@@ -9,30 +10,44 @@ def client():
         yield client
 
 
-def test_redeem_points_negative_balance(client):
-    # Choose a club and competition for the test
+@pytest.fixture
+def get_club_and_competition():
+    def _get_club_and_competition(club_name, competition_name):
+        club = next((c for c in clubs if c['name'] == club_name), None)
+        competition = next(
+            (c for c in competitions if c['name'] == competition_name), None)
+        return club, competition
+    return _get_club_and_competition
+
+
+def test_redeem_points_negative_balance(client, get_club_and_competition):
     club_name = "Simply Lift"
     competition_name = "Spring Festival"
-    club = next((c for c in clubs if c['name'] == club_name), None)
-    competition = next(
-        (c for c in competitions if c['name'] == competition_name), None)
+    club, competition = get_club_and_competition(club_name, competition_name)
 
-    # Calculate available points (e.g., 13 points for "Simply Lift")
-    available_points = int(club['points'])
+    # Set the club's points to a known value less than 12
+    club['points'] = 10
 
-    # Attempt to redeem more points than available
-    places_to_redeem = available_points + 1  # Attempt to go into negative balance
+    # Try to redeem more points than the club has but within the 12 places limit
+    places_to_redeem = 11  # More than available points but less than 12
     data = {
         'competition': competition_name,
         'club': club_name,
         'places': places_to_redeem
     }
 
-    # Perform the purchasePlaces POST request
     response = client.post('/purchasePlaces', data=data, follow_redirects=True)
 
-    # Check if the response contains the "Not enough points to redeem" flash message
-    assert b'Not enough points to redeem.' in response.data
+    # Parse HTML response to find the alert message
+    soup = BeautifulSoup(response.data, 'html.parser')
+    alert_text = soup.find('div', class_='alert').get_text(
+        strip=True) if soup.find('div', class_='alert') else ''
 
-    # Check if the club's points balance remains the same
-    assert int(club['points']) == available_points
+    # Assert that the expected error message is present
+    assert 'Not enough points to redeem.' in alert_text, "Error message not found in response"
+
+    # Check if the club's points balance remains unchanged
+    updated_club, _ = get_club_and_competition(
+        club_name, competition_name)  # Re-fetch to get updated data
+    assert int(
+        updated_club['points']) == 10, "Club points should not have changed"
