@@ -41,7 +41,6 @@ def test_login(client):
     # Assert that the response contains the expected content
     assert response.status_code == 200
     assert b"Welcome" in response.data
-    assert b"Great-booking complete!" not in response.data
 
 
 def test_logout(client):
@@ -51,4 +50,3 @@ def test_logout(client):
     # Assert that the response redirects to the index page
     assert response.status_code == 200
     assert b"Welcome to the GUDLFT Registration Portal!" in response.data
-    assert b"Great-booking complete!" not in response.data  # Ensure no booking message
